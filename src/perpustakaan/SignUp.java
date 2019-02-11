@@ -68,7 +68,7 @@ public class SignUp extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Copyright 2019 STIMIK Primakara");
+        jLabel1.setText("Copyright 2019 STMIK Primakara");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -236,7 +236,7 @@ public class SignUp extends javax.swing.JFrame {
         );
 
         back.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        back.setText("Back");
+        back.setText("<-- Cancel");
         back.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backActionPerformed(evt);
@@ -394,18 +394,12 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JTextField name;
-    private javax.swing.JTextField name1;
     private javax.swing.JTextField nim;
     private javax.swing.JPasswordField password;
     private javax.swing.JButton signup;
     private javax.swing.JTextField username;
-    private javax.swing.JTextField username1;
-    private javax.swing.JTextField username2;
     // End of variables declaration//GEN-END:variables
 }

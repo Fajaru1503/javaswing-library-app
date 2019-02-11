@@ -29,6 +29,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         users.setVisible(false);
         addbooks.setVisible(false);
         updatebooks.setVisible(false);
+        borrowedbook.setVisible(false);
     }
     
     public void addBooksLogic() throws SQLException {
@@ -50,6 +51,41 @@ public class AdminDashboard extends javax.swing.JFrame {
         ps.executeUpdate();
         
         JOptionPane.showMessageDialog(null, "New Book Has Inserted!");
+    }
+    
+    public void updateLogic() throws SQLException{
+        String query = "UPDATE books SET title = ?, author = ?, release_year = ?, type = ? WHERE id = ?";
+
+        PreparedStatement ps = con.prepareStatement(query);
+
+        ps.setString(1, title_update.getText());
+        ps.setString(2, author_update.getText());
+        ps.setString(3, year_update.getText());
+        
+        if(elec_update.isSelected()){
+            type_book = "electronic";
+        } else if(nonelec_update.isSelected()){
+            type_book = "non-electronic";
+        }
+        
+        ps.setString(4, type_book);
+        ps.setInt(5, listBook().get(index).getId());
+
+        ps.executeUpdate();
+
+        JOptionPane.showMessageDialog(null, "Data Has Beed Updated");
+    }
+    
+    public void deleteLogic() throws SQLException{
+        String query = "DELETE FROM books WHERE id = ?";
+        
+        PreparedStatement ps = con.prepareStatement(query);
+        
+        ps.setInt(1, listBook().get(index).getId());
+        
+        ps.executeUpdate();
+
+        JOptionPane.showMessageDialog(null, "Data Has Been Deleted");
     }
     
     public ArrayList<Books> listBook()
@@ -135,42 +171,50 @@ public class AdminDashboard extends javax.swing.JFrame {
             
             model.addRow(row);
         }
-    
     }
     
-    public void updateLogic() throws SQLException{
-        String query = "UPDATE books SET title = ?, author = ?, release_year = ?, type = ? WHERE id = ?";
-
-        PreparedStatement ps = con.prepareStatement(query);
-
-        ps.setString(1, title_update.getText());
-        ps.setString(2, author_update.getText());
-        ps.setString(3, year_update.getText());
-        
-        if(elec_update.isSelected()){
-            type_book = "electronic";
-        } else if(nonelec_update.isSelected()){
-            type_book = "non-electronic";
+    public ArrayList<Transaction> listTransaction()
+    {
+        ArrayList<Transaction> productList  = new ArrayList<>();
+        String query = "SELECT * FROM transaction";
+            
+        try {
+            
+            stat = con.createStatement();
+            ResultSet rs = stat.executeQuery(query);
+            Transaction trans;
+            
+            while(rs.next())
+            {
+                trans = new Transaction(rs.getInt("id"),rs.getString("username"),rs.getString("title"),rs.getString("author"),rs.getString("type"),rs.getString("start_date"),rs.getString("return_date"));
+                productList.add(trans);
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(ListBuku.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        ps.setString(4, type_book);
-        ps.setInt(5, listBook().get(index).getId());
-
-        ps.executeUpdate();
-
-        JOptionPane.showMessageDialog(null, "Data Has Beed Updated");
+        return productList;     
     }
     
-    public void deleteLogic() throws SQLException{
-        String query = "DELETE FROM books WHERE id = ?";
+    public void showTransaction()
+    {
+        ArrayList<Transaction> list = listTransaction();
+        DefaultTableModel model = (DefaultTableModel)tableBorrow.getModel();
         
-        PreparedStatement ps = con.prepareStatement(query);
-        
-        ps.setInt(1, listBook().get(index).getId());
-        
-        ps.executeUpdate();
-
-        JOptionPane.showMessageDialog(null, "Data Has Been Deleted");
+        model.setRowCount(0);
+        Object[] row = new Object[6];
+        for(int i = 0; i < list.size(); i++)
+        {
+            row[0] = i+1;
+            row[1] = list.get(i).getUsername();
+            row[2] = list.get(i).getTitle();
+            row[3] = list.get(i).getAuthor();
+            row[4] = list.get(i).getSdate();
+            row[5] = list.get(i).getRdate();
+            
+            model.addRow(row);
+        }
     }
     
     public void showItem() throws SQLException{
@@ -212,6 +256,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         addBooks = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         exit = new javax.swing.JButton();
+        listBorrow = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
         updatebooks = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jPanel17 = new javax.swing.JPanel();
@@ -250,6 +296,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         author = new javax.swing.JTextField();
         jPanel15 = new javax.swing.JPanel();
         year = new javax.swing.JTextField();
+        borrowedbook = new javax.swing.JPanel();
+        tableborrowed = new javax.swing.JScrollPane();
+        tableBorrow = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -259,7 +308,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Copyright 2019 STIMIK Primakara");
+        jLabel1.setText("Copyright 2019 STMIK Primakara");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -429,12 +478,41 @@ public class AdminDashboard extends javax.swing.JFrame {
         );
 
         exit.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        exit.setText("EXIT");
+        exit.setText("LogOut");
         exit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitActionPerformed(evt);
             }
         });
+
+        listBorrow.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        listBorrow.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        listBorrow.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                listBorrowMouseClicked(evt);
+            }
+        });
+
+        jLabel8.setFont(new java.awt.Font("SansSerif", 0, 18)); // NOI18N
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel8.setText("List Borrowed Book");
+
+        javax.swing.GroupLayout listBorrowLayout = new javax.swing.GroupLayout(listBorrow);
+        listBorrow.setLayout(listBorrowLayout);
+        listBorrowLayout.setHorizontalGroup(
+            listBorrowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(listBorrowLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        listBorrowLayout.setVerticalGroup(
+            listBorrowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(listBorrowLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -450,7 +528,8 @@ public class AdminDashboard extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(exit)
-                .addGap(65, 65, 65))
+                .addGap(53, 53, 53))
+            .addComponent(listBorrow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -463,13 +542,15 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addComponent(addBooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(listUsers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(listBorrow, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addComponent(exit)
-                .addGap(17, 17, 17))
+                .addContainerGap())
         );
 
         updatebooks.setBackground(new java.awt.Color(255, 255, 255));
-        updatebooks.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 5, true));
+        updatebooks.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 3, true));
 
         jLabel11.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -693,7 +774,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         );
         booksLayout.setVerticalGroup(
             booksLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 503, Short.MAX_VALUE)
         );
 
         users.setBackground(new java.awt.Color(255, 255, 255));
@@ -736,7 +817,7 @@ public class AdminDashboard extends javax.swing.JFrame {
         );
         usersLayout.setVerticalGroup(
             usersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
         );
 
         addbooks.setBackground(new java.awt.Color(255, 255, 255));
@@ -892,6 +973,39 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addGap(28, 28, 28))
         );
 
+        borrowedbook.setBackground(new java.awt.Color(255, 255, 255));
+
+        tableBorrow.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No.", "Username", "Title", "Author", "Borrowed", "Return"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tableborrowed.setViewportView(tableBorrow);
+
+        javax.swing.GroupLayout borrowedbookLayout = new javax.swing.GroupLayout(borrowedbook);
+        borrowedbook.setLayout(borrowedbookLayout);
+        borrowedbookLayout.setHorizontalGroup(
+            borrowedbookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(tableborrowed, javax.swing.GroupLayout.DEFAULT_SIZE, 599, Short.MAX_VALUE)
+        );
+        borrowedbookLayout.setVerticalGroup(
+            borrowedbookLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(borrowedbookLayout.createSequentialGroup()
+                .addComponent(tableborrowed, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -916,39 +1030,48 @@ public class AdminDashboard extends javax.swing.JFrame {
                 .addGroup(layout.createSequentialGroup()
                     .addGap(325, 325, 325)
                     .addComponent(updatebooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(133, Short.MAX_VALUE)))
+                    .addContainerGap(137, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGap(0, 201, Short.MAX_VALUE)
+                    .addComponent(borrowedbook, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(64, 64, 64)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(111, 111, 111)
-                        .addComponent(addbooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 38, Short.MAX_VALUE))
+                        .addComponent(addbooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 36, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 491, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 509, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(64, Short.MAX_VALUE)
+                    .addContainerGap(63, Short.MAX_VALUE)
                     .addComponent(books, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(43, Short.MAX_VALUE)))
+                    .addContainerGap(52, Short.MAX_VALUE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addContainerGap(64, Short.MAX_VALUE)
+                    .addContainerGap(63, Short.MAX_VALUE)
                     .addComponent(users, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(38, 38, 38)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(121, 121, 121)
                     .addComponent(updatebooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(109, Short.MAX_VALUE)))
+                    .addContainerGap(131, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(63, 63, 63)
+                    .addComponent(borrowedbook, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(40, Short.MAX_VALUE)))
         );
 
         pack();
@@ -980,6 +1103,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void listUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listUsersMouseClicked
         books.setVisible(false);
         addbooks.setVisible(false);
+        borrowedbook.setVisible(false);
         users.setVisible(true);
         showUsers();
     }//GEN-LAST:event_listUsersMouseClicked
@@ -987,6 +1111,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void listBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listBooksMouseClicked
         users.setVisible(false);
         addbooks.setVisible(false);
+        borrowedbook.setVisible(false);
         books.setVisible(true);
         showBooks();
     }//GEN-LAST:event_listBooksMouseClicked
@@ -994,6 +1119,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private void addBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addBooksMouseClicked
         books.setVisible(false);
         users.setVisible(false);
+        borrowedbook.setVisible(false);
         addbooks.setVisible(true);
     }//GEN-LAST:event_addBooksMouseClicked
 
@@ -1035,6 +1161,14 @@ public class AdminDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_delete_updateActionPerformed
 
+    private void listBorrowMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listBorrowMouseClicked
+        books.setVisible(false);
+        addbooks.setVisible(false);
+        users.setVisible(false);
+        borrowedbook.setVisible(true);
+        showTransaction();
+    }//GEN-LAST:event_listBorrowMouseClicked
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -1074,6 +1208,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JTextField author_update;
     private javax.swing.JButton back_update;
     private javax.swing.JPanel books;
+    private javax.swing.JPanel borrowedbook;
     private javax.swing.JButton delete_update;
     private javax.swing.JRadioButton elec;
     private javax.swing.JRadioButton elec_update;
@@ -1094,7 +1229,6 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -1108,17 +1242,18 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPanel listBooks;
+    private javax.swing.JPanel listBorrow;
     private javax.swing.JPanel listUsers;
     private javax.swing.JRadioButton nonelec;
     private javax.swing.JRadioButton nonelec_update;
     private javax.swing.JButton submit;
+    private javax.swing.JTable tableBorrow;
     private javax.swing.JTable table_book;
     private javax.swing.JTable table_user;
+    private javax.swing.JScrollPane tableborrowed;
     private javax.swing.JTextField title;
     private javax.swing.JTextField title_update;
     private javax.swing.ButtonGroup type;

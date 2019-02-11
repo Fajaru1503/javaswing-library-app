@@ -27,19 +27,18 @@ public class Login extends javax.swing.JFrame {
         ResultSet rs = stat.executeQuery(query);
         if(rs.next()){
             if(username.getText().equals(rs.getString("username")) && password.getText().equals(rs.getString("password"))){
-                JOptionPane.showMessageDialog(null, "Access Granted");
-                    switch (rs.getString("role")) {
-                        case "admin":
-                            this.setVisible(false);
-                            new AdminDashboard().setVisible(true);
-                            break;
-                        case "member":
-                            this.setVisible(false);
-                            new ListBuku().setVisible(true);
-                            break;
-                        default:
-                            break;
-                    }
+                switch (rs.getString("role")) {
+                    case "admin":
+                        this.setVisible(false);
+                        new AdminDashboard().setVisible(true);
+                        break;
+                    case "member":
+                        this.setVisible(false);
+                        new ListBuku(username.getText()).setVisible(true);
+                        break;
+                    default:
+                        break;
+                }
             }
         }else{
             JOptionPane.showMessageDialog(null, "invalid username or password");
@@ -166,9 +165,9 @@ public class Login extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(login, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
+                .addGap(18, 18, 18)
                 .addComponent(singup)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(26, 191, 155));
@@ -215,7 +214,7 @@ public class Login extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Copyright 2019 STIMIK Primakara");
+        jLabel1.setText("Copyright 2019 STMIK Primakara");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
