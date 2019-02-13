@@ -42,13 +42,19 @@ public class SignUp extends javax.swing.JFrame {
 //        
 //    }
     
-//    public boolean isUsername() throws SQLException {
-//        String query = "SELECT * FROM users WHERE username=?";
-//        ResultSet rs = stat.executeQuery(query);
-//        
+    public boolean isUsername() throws SQLException {
+        String query = "SELECT * FROM users WHERE username='"+username.getText()+"'";
+        ResultSet rs = stat.executeQuery(query);
+
+        if (rs.next()){
+            JOptionPane.showMessageDialog(null, "Username Already Exists!");
+            return false;
+        } else {
+            return true;
+        }
 //        return username.getText().equals(rs.getString("username"));
-//        
-//    }
+
+    }
     
     public boolean isInputEmpty() {      
         return username.getText().trim().length() < 1 ||
@@ -63,19 +69,21 @@ public class SignUp extends javax.swing.JFrame {
             if(isInputEmpty()) {
                 JOptionPane.showMessageDialog(null, "One or More Fields are Empty");
             } else {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO users(username, password, name, nim, role) values(?,?,?,?,'member')");
-    
-                ps.setString(1, username.getText());
-                ps.setString(2, password.getText());
-                ps.setString(3, name.getText());
-                ps.setString(4, nim.getText());
-    
-                ps.executeUpdate();
+                if (isUsername()) {
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO users(username, password, name, nim, role) values(?,?,?,?,'member')");
 
-                JOptionPane.showMessageDialog(null, "Account Has Been Created!");
+                    ps.setString(1, username.getText());
+                    ps.setString(2, password.getText());
+                    ps.setString(3, name.getText());
+                    ps.setString(4, nim.getText());
 
-                this.setVisible(false);
-                new Login().setVisible(true);
+                    ps.executeUpdate();
+
+                    JOptionPane.showMessageDialog(null, "Account Has Been Created!");
+
+                    this.setVisible(false);
+                    new Login().setVisible(true);
+                }
             }
 //        } else {
 //            JOptionPane.showMessageDialog(null, "Username Already Exists");

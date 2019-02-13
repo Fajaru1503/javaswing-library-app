@@ -14,7 +14,7 @@ public class GetConnection {
     public void dbConnect()
     {        
         try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost/library","root","");
+            con = DriverManager.getConnection("jdbc:mysql://192.168.56.102/library","dharma","123");
             stat = con.createStatement();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Connection Error "+ex.getMessage());
