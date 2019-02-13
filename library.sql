@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 11, 2019 at 08:11 PM
+-- Generation Time: Feb 12, 2019 at 02:18 AM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.3.1
 
@@ -69,8 +69,8 @@ INSERT INTO `transaction` (`id`, `username`, `title`, `author`, `type`, `start_d
 (2, 'Fajar', 'Matematika Diskrit', 'Ibu Queena', 'electronic', '2019-02-12', '2019-02-15'),
 (3, 'dharma', 'Data Mining', 'Dody Prasetyo', 'non-electronic', '2019-02-11', '2019-02-12'),
 (7, 'dharma', 'Matematika Diskrit', 'Ibu Queena', 'electronic', '2019-02-14', '2019-02-18'),
-(8, 'dharma', 'Matematika Diskrit', 'Ibu Queena', 'electronic', '2019-02-22', '2019-02-23'),
-(9, 'Fajar', 'Data Mining', 'Dody Prasetyo', 'non-electronic', '2019-02-13', '2019-02-14');
+(9, 'Fajar', 'Data Mining', 'Dody Prasetyo', 'non-electronic', '2019-02-13', '2019-02-14'),
+(11, 'dharma', 'Data Mining', 'Dody Prasetyo', 'non-electronic', '2019-02-13', '2019-02-14');
 
 -- --------------------------------------------------------
 
@@ -132,7 +132,7 @@ ALTER TABLE `books`
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
