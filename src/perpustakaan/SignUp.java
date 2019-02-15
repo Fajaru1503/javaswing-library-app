@@ -30,25 +30,19 @@ public class SignUp extends javax.swing.JFrame {
         jLabel12.setVisible(false);
     }
     
-//    public boolean checkUser() throws SQLException {
-//        String query = "SELECT count(*) FROM users WHERE username='"+username.getText()+"'";
-//        ResultSet rs = stat.executeQuery(query);
-//        
-//        if (rs > 0) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//        
-//    }
-    
-//    public boolean isUsername() throws SQLException {
-//        String query = "SELECT * FROM users WHERE username=?";
-//        ResultSet rs = stat.executeQuery(query);
-//        
+    public boolean isUsername() throws SQLException {
+        String query = "SELECT * FROM users WHERE username='"+username.getText()+"'";
+        ResultSet rs = stat.executeQuery(query);
+
+        if (rs.next()){
+            JOptionPane.showMessageDialog(null, "Username Already Exists!");
+            return false;
+        } else {
+            return true;
+        }
 //        return username.getText().equals(rs.getString("username"));
-//        
-//    }
+
+    }
     
     public boolean isInputEmpty() {      
         return username.getText().trim().length() < 1 ||
@@ -63,19 +57,21 @@ public class SignUp extends javax.swing.JFrame {
             if(isInputEmpty()) {
                 JOptionPane.showMessageDialog(null, "One or More Fields are Empty");
             } else {
-                PreparedStatement ps = con.prepareStatement("INSERT INTO users(username, password, name, nim, role) values(?,?,?,?,'member')");
-    
-                ps.setString(1, username.getText());
-                ps.setString(2, password.getText());
-                ps.setString(3, name.getText());
-                ps.setString(4, nim.getText());
-    
-                ps.executeUpdate();
+                if (isUsername()) {
+                    PreparedStatement ps = con.prepareStatement("INSERT INTO users(username, password, name, nim, role) values(?,?,?,?,'member')");
 
-                JOptionPane.showMessageDialog(null, "Account Has Been Created!");
+                    ps.setString(1, username.getText());
+                    ps.setString(2, password.getText());
+                    ps.setString(3, name.getText());
+                    ps.setString(4, nim.getText());
 
-                this.setVisible(false);
-                new Login().setVisible(true);
+                    ps.executeUpdate();
+
+                    JOptionPane.showMessageDialog(null, "Account Has Been Created!");
+
+                    this.setVisible(false);
+                    new Login().setVisible(true);
+                }
             }
 //        } else {
 //            JOptionPane.showMessageDialog(null, "Username Already Exists");
@@ -256,6 +252,11 @@ public class SignUp extends javax.swing.JFrame {
                 signupActionPerformed(evt);
             }
         });
+        signup.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                signupKeyPressed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel5.setText("Username");
@@ -356,6 +357,11 @@ public class SignUp extends javax.swing.JFrame {
         nim.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 nimFocusGained(evt);
+            }
+        });
+        nim.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                nimKeyPressed(evt);
             }
         });
 
@@ -584,6 +590,22 @@ public class SignUp extends javax.swing.JFrame {
     private void jLabel1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseExited
         jLabel12.setVisible(false);
     }//GEN-LAST:event_jLabel1MouseExited
+
+    private void nimKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nimKeyPressed
+        try {
+            signUpLogic();
+        } catch (SQLException ex) {
+            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_nimKeyPressed
+
+    private void signupKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_signupKeyPressed
+        try {
+            signUpLogic();
+        } catch (SQLException ex) {
+            Logger.getLogger(SignUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_signupKeyPressed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */

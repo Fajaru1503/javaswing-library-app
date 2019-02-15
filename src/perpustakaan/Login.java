@@ -219,6 +219,7 @@ public class Login extends javax.swing.JFrame {
         jLabel7.setText("Password");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(26, 191, 155));
         jLabel8.setText("Exit");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
