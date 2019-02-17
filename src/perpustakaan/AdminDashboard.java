@@ -50,9 +50,9 @@ public class AdminDashboard extends javax.swing.JFrame {
         String query = "INSERT INTO books(title, author, release_year, type) values(?,?,?,?)";
         
         PreparedStatement ps = con.prepareStatement(query);
-        ps.setString(1, title.getText());
-        ps.setString(2, author.getText());
-        ps.setString(3, year.getText());
+        ps.setString(1, title.getText().trim());
+        ps.setString(2, author.getText().trim());
+        ps.setString(3, year.getText().trim());
         
         if(elec.isSelected()){
             type_book = "electronic";
@@ -72,9 +72,9 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         PreparedStatement ps = con.prepareStatement(query);
 
-        ps.setString(1, title_update.getText());
-        ps.setString(2, author_update.getText());
-        ps.setString(3, year_update.getText());
+        ps.setString(1, title_update.getText().trim());
+        ps.setString(2, author_update.getText().trim());
+        ps.setString(3, year_update.getText().trim());
         
         if(elec_update.isSelected()){
             type_book = "electronic";
@@ -256,19 +256,15 @@ public class AdminDashboard extends javax.swing.JFrame {
     
     public void showItem() throws SQLException{
         
-//        String query = "SELECT * FROM books";
-//        ResultSet rs = stat.executeQuery(query);
-//        
-//        if(rs.getString("type").equals("electronic")){
-//            elec.isSelected();
-//        } else if(rs.getString("type").equals("non-electronic")){
-//            nonelec.isSelected();
-//        }
-        
         title_update.setText(listBook().get(index).getTitle());
         author_update.setText(listBook().get(index).getAuthor());
         year_update.setText(listBook().get(index).getYear());
-//        type_update.setSelected((ButtonModel) type, true);
+        if(listBook().get(index).getType().equals("electronic")){
+            type_update.setSelected(elec_update.getModel(), true);
+        } else if(listBook().get(index).getType().equals("non-electronic")){
+            type_update.setSelected(nonelec_update.getModel(), true);
+        }
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -298,6 +294,8 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        jSeparator12 = new javax.swing.JSeparator();
         jPanel1 = new javax.swing.JPanel();
         users = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -568,6 +566,13 @@ public class AdminDashboard extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("LogOut");
 
+        jLabel29.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        jLabel29.setForeground(new java.awt.Color(250, 250, 250));
+        jLabel29.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel29.setText("ADMIN");
+
+        jSeparator12.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -585,15 +590,24 @@ public class AdminDashboard extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel13)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel29, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(59, 59, 59)
+                .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(46, 46, 46)
                 .addComponent(jLabel3)
-                .addGap(50, 50, 50)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel29)
+                .addGap(0, 0, 0)
+                .addComponent(jSeparator12, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(37, 37, 37)
                 .addComponent(listBooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(addBooks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1182,9 +1196,7 @@ public class AdminDashboard extends javax.swing.JFrame {
             table_book.getColumnModel().getColumn(0).setMinWidth(40);
             table_book.getColumnModel().getColumn(0).setPreferredWidth(40);
             table_book.getColumnModel().getColumn(0).setMaxWidth(40);
-            table_book.getColumnModel().getColumn(1).setMinWidth(230);
-            table_book.getColumnModel().getColumn(1).setPreferredWidth(230);
-            table_book.getColumnModel().getColumn(1).setMaxWidth(230);
+            table_book.getColumnModel().getColumn(1).setPreferredWidth(180);
             table_book.getColumnModel().getColumn(3).setMinWidth(100);
             table_book.getColumnModel().getColumn(3).setPreferredWidth(100);
             table_book.getColumnModel().getColumn(3).setMaxWidth(100);
@@ -1272,6 +1284,7 @@ public class AdminDashboard extends javax.swing.JFrame {
 
         jLabel14.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/perpustakaan/image/Logo Primakara Dev-1.png"))); // NOI18N
         jLabel14.setText("Created by Primakara Developers");
 
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -1345,7 +1358,14 @@ public class AdminDashboard extends javax.swing.JFrame {
             year.setText(null);
             addbooks.setVisible(false);
             books.setVisible(true);
+            type.setSelected(elec.getModel(), false);
+            type.setSelected(nonelec.getModel(), false);
+            
             showBooks();
+            listBooks.setBackground(new java.awt.Color(0, 142, 109));
+            addBooks.setBackground(new java.awt.Color(26, 191, 155));
+            listUsers.setBackground(new java.awt.Color(26, 191, 155));
+            listBorrow.setBackground(new java.awt.Color(26, 191, 155));
         } catch (SQLException ex) {
             Logger.getLogger(AdminDashboard.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -1619,6 +1639,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1640,6 +1661,7 @@ public class AdminDashboard extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator10;
     private javax.swing.JSeparator jSeparator11;
+    private javax.swing.JSeparator jSeparator12;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
